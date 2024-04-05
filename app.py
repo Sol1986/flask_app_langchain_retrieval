@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 # Your existing imports for the chain
 from langchain_openai import ChatOpenAI
+from bs4 import BeautifulSoup
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_community.document_loaders import WebBaseLoader
