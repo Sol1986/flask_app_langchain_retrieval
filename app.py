@@ -7,31 +7,31 @@ from langchain_openai import ChatOpenAI
 from bs4 import BeautifulSoup
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.document_loaders import WebBaseLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain.chains import create_retrieval_chain
+# from langchain_community.document_loaders import WebBaseLoader
+# from langchain.text_splitter import RecursiveCharacterTextSplitter
+# from langchain_openai import OpenAIEmbeddings
+# from langchain_community.vectorstores import Chroma
+# from langchain.chains import create_retrieval_chain
 
 app = Flask(__name__)
 
 # Load environment variables
 load_dotenv()
 
-def get_documents_from_web(url):
-    loader = WebBaseLoader(url) #will scrape the webpage and add the content of the page to a langchain document.
-    docs = loader.load()
+# def get_documents_from_web(url):
+#     loader = WebBaseLoader(url) #will scrape the webpage and add the content of the page to a langchain document.
+#     docs = loader.load()
 
-    splitter = RecursiveCharacterTextSplitter(chunk_size = 400, chunk_overlap = 20) #still not doing it. Use a vector database to do a semantic search or similarity search. USed to store the documents. Use a function to pass the query. 
-    splitDocs = splitter.split_documents(docs)
-    return splitDocs
+#     splitter = RecursiveCharacterTextSplitter(chunk_size = 400, chunk_overlap = 20) #still not doing it. Use a vector database to do a semantic search or similarity search. USed to store the documents. Use a function to pass the query. 
+#     splitDocs = splitter.split_documents(docs)
+#     return splitDocs
 
-def create_db(docs):
-    embedding = OpenAIEmbeddings()
-    vectorStore = Chroma.from_documents(docs, embedding= embedding)
-    return vectorStore
+# def create_db(docs):
+#     embedding = OpenAIEmbeddings()
+#     vectorStore = Chroma.from_documents(docs, embedding= embedding)
+#     return vectorStore
 
-def create_chain(vectorStore):
+def create_chain():
     llm = ChatOpenAI(
     model = "gpt-3.5-turbo-1106",
     temperature= 0.4,
@@ -52,27 +52,29 @@ def create_chain(vectorStore):
 
     )
 
-    retriever = vectorStore.as_retriever( search_kwargs = {"k": 3})
-    retrieval_chain = create_retrieval_chain(
-        retriever= retriever, # will fetch most relevant documents fromt the vector store and pass it to a {context} variable in the prompt
-        combine_docs_chain= chain,
+    # retriever = vectorStore.as_retriever( search_kwargs = {"k": 3})
+    # retrieval_chain = create_retrieval_chain(
+    #     retriever= retriever, # will fetch most relevant documents fromt the vector store and pass it to a {context} variable in the prompt
+    #     combine_docs_chain= chain,
 
-    )
+    # )
 
 
-    return retrieval_chain
-
-# Initialize your chain here (simplified example, adjust according to your needs)
-def initialize_chain():
-    # Example URL - replace with actual URL or mechanism to fetch documents
-    url = "https://python.langchain.com/docs/expression_language/"
-    docs = get_documents_from_web(url)
-    vectorStore = create_db(docs)
-    chain = create_chain(vectorStore)
+    # return retrieval_chain
     return chain
 
+# Initialize your chain here (simplified example, adjust according to your needs)
+# def initialize_chain():
+#     # Example URL - replace with actual URL or mechanism to fetch documents
+#     url = "https://python.langchain.com/docs/expression_language/"
+#     docs = get_documents_from_web(url)
+#     vectorStore = create_db(docs)
+#     chain = create_chain(vectorStore)
+#     return chain
+
 # Initialize the chain once when the app starts
-chain = initialize_chain()
+# chain = initialize_chain()
+chain = create_chain()
 
 def process_chat(chain, question):
     # This function was in your original script but not included in your Flask app script.
