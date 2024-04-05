@@ -43,7 +43,7 @@ def process_chat(chain, question):
 
 
 
-@app.route('/process_chat', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def process_chat_endpoint():
     global last_response 
 
