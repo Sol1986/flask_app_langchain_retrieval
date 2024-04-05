@@ -43,19 +43,30 @@ def process_chat(chain, question):
 
 
 
-@app.route('/process_chat', methods=['POST'])
+@app.route('/process_chat', methods=['GET', 'POST'])
 def process_chat_endpoint():
-    # Extract question from the request
-    question = request.json.get('question')
-    if not question:
-        return jsonify({'error': 'No question provided'}), 400
+    global last_response 
+
+    if request.method == 'GET':
+    # Return a simple instructional message on GET request
+        return jsonify({
+            'message': 'Send a POST request with a JSON body {"question": "your question here"} to interact with the chat model.'
+        })
     
-    # Process the question through your chain
-    try:
-        response = process_chat(chain, question)
-        return jsonify({'answer': response})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    else:  # POST request
+
+    # Extract question from the request
+        question = request.json.get('question')
+        if not question:
+            return jsonify({'error': 'No question provided'}), 400
+        
+        # Process the question through your chain
+        try:
+            response = process_chat(chain, question)
+            last_response = response
+            return jsonify({'answer': response})
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
