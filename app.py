@@ -41,16 +41,18 @@ def create_chain():
     prompt = ChatPromptTemplate.from_template(
         """
     You are a helpful assistant:
-    context : {context}
     Question: {input}
     """
+    # context : {context}
     )
 
-    chain = create_stuff_documents_chain(
-    llm = llm,
-    prompt = prompt
+    chain = prompt | llm 
 
-    )
+    # chain = create_stuff_documents_chain(
+    # llm = llm,
+    # prompt = prompt
+
+    # )
 
     # retriever = vectorStore.as_retriever( search_kwargs = {"k": 3})
     # retrieval_chain = create_retrieval_chain(
